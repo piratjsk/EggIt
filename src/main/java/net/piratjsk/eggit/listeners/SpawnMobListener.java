@@ -1,12 +1,10 @@
 package net.piratjsk.eggit.listeners;
 
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
+import net.piratjsk.eggit.EggIt;
 import org.bukkit.Location;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -33,12 +31,7 @@ public final class SpawnMobListener implements Listener {
         if (egg.hasDisplayName())
             entity.setCustomName(egg.getDisplayName());
 
-        if (type.equals(EntityType.SHEEP) && egg.hasLore()) {
-            final Sheep sheep = (Sheep) entity;
-            final String colorName = ChatColor.stripColor(egg.getLore().get(0).replace("Color: ", ""));
-            final DyeColor color = DyeColor.valueOf(colorName.toUpperCase());
-            sheep.setColor(color);
-        }
+        EggIt.getEggHandler(type).updateEntity(entity, item);
 
         if (entity instanceof Ageable) {
             ((Ageable) entity).setBaby();

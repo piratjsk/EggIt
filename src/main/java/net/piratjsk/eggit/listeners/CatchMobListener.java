@@ -2,7 +2,6 @@ package net.piratjsk.eggit.listeners;
 
 import net.piratjsk.eggit.EggIt;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -11,7 +10,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,11 +17,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -121,17 +117,7 @@ public final class CatchMobListener implements Listener {
         mob.getLocation().getWorld().spawnParticle(Particle.SMOKE_LARGE,mob.getLocation(),2);
         final String egg = mob.getType().name() + "_spawn_egg";
         final ItemStack spawnEgg = new ItemStack(Material.getMaterial(egg.toUpperCase()));
-        final ItemMeta meta = spawnEgg.getItemMeta();
-        final List<String> lore = new ArrayList();
-
-        if (mob.getType().equals(EntityType.SHEEP)) {
-            final Sheep sheep = (Sheep) mob;
-            lore.add(ChatColor.translateAlternateColorCodes('&',"&r&7Color: " + sheep.getColor().name().toLowerCase()));
-        }
-
-        meta.setLore(lore);
-        spawnEgg.setItemMeta(meta);
+        EggIt.getEggHandler(mob.getType()).updateEgg(spawnEgg, mob);
         mob.getLocation().getWorld().dropItem(mob.getLocation(), spawnEgg);
-
     }
 }
