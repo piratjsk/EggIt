@@ -1,0 +1,33 @@
+mobsToCatch:
+  # mob_type: - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+  #   baby: true/false - if mob have to be in baby form (by default all mobs that have baby form require it) (works only for mobs that have baby form)
+  #   weak: true/false - if mob have to be under effect of potion of weakness
+  #   maxHealth: 4 - max health mob can have to be caught
+  #   maxSize: 1 - max size mob can be to be caught (works only for slime and magma_cube)
+  bat:
+  chicken:
+  pig:
+  cow:
+  mushroom_cow:
+  sheep:
+  horse:
+  mule:
+  donkey:
+  ocelot:
+  wolf:
+  villager:
+
+  slime:
+    maxSize: 1
+  magma_cube:
+    maxSize: 1
+
+  zombie:
+    weak: true
+    maxHealth: 4
+  pig_Zombie:
+    weak: true
+    maxHealth: 4
+  silverfish:
+    weak: true
+  endermite:
