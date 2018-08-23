@@ -1,0 +1,4 @@
+name: EggIt
+version: 1.0
+main: net.piratjsk.eggit.EggIt
+api-version: 1.13
