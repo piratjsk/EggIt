@@ -1,6 +1,7 @@
 package net.piratjsk.eggit;
 
 import net.piratjsk.eggit.listeners.CatchMobListener;
+import net.piratjsk.eggit.listeners.SpawnMobListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,6 +16,7 @@ public final class EggIt extends JavaPlugin {
     public void onEnable() {
         this.saveDefaultConfig();
         this.getServer().getPluginManager().registerEvents(new CatchMobListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new SpawnMobListener(), this);
         final ItemStack egg = new ItemStack(Material.EGG);
         final ItemMeta meta = egg.getItemMeta();
         meta.setDisplayName(ChatColor.RESET + "Empty Egg");
