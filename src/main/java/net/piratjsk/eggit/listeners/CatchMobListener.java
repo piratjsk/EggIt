@@ -39,6 +39,7 @@ public final class CatchMobListener implements Listener {
         final Entity entity = event.getRightClicked();
         if (canBeCaught(entity)) {
             catchMob(event.getPlayer(), entity);
+            event.getPlayer().playSound(entity.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1.0f, 1.0f);
         } else {
             event.getPlayer().playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
         }
