@@ -2,6 +2,7 @@ package net.piratjsk.eggit.listeners;
 
 import net.piratjsk.eggit.EggIt;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -109,15 +110,31 @@ public final class CatchMobListener implements Listener {
         return Material.getMaterial(egg.toUpperCase()) != null;
     }
 
-    private void catchMob(final Player player, final Entity mob) {
+    private void catchMob(final Player player, final Entity entity) {
+        this.takeOneEmptyEggFromPlayer(player);
+        entity.remove();
+        this.playMobCatchVisualEffectAt(entity.getLocation());
+        final ItemStack egg = this.getSpawnEggFor(entity);
+        EggIt.updateEgg(egg, entity);
+        this.dropEggAt(egg, entity.getLocation());
+    }
+
+    private void takeOneEmptyEggFromPlayer(final Player player) {
         final ItemStack item = player.getInventory().getItemInMainHand();
         if (!isEmptyEgg(item)) return;
         item.setAmount(item.getAmount()-1);
-        mob.remove();
-        mob.getLocation().getWorld().spawnParticle(Particle.SMOKE_LARGE,mob.getLocation(),2);
-        final String egg = mob.getType().name() + "_spawn_egg";
-        final ItemStack spawnEgg = new ItemStack(Material.getMaterial(egg.toUpperCase()));
-        EggIt.getEggHandler(mob.getType()).updateEgg(spawnEgg, mob);
-        mob.getLocation().getWorld().dropItem(mob.getLocation(), spawnEgg);
+    }
+
+    private void playMobCatchVisualEffectAt(final Location loc) {
+        loc.getWorld().spawnParticle(Particle.SMOKE_LARGE,loc,2);
+    }
+
+    private ItemStack getSpawnEggFor(final Entity entity) {
+        final String eggItemTypeName = entity.getType().name() + "_spawn_egg";
+        return new ItemStack(Material.getMaterial(eggItemTypeName.toUpperCase()));
+    }
+
+    private void dropEggAt(final ItemStack egg, final Location loc) {
+       loc.getWorld().dropItem(loc, egg);
     }
 }

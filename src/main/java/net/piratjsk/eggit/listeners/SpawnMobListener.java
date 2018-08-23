@@ -31,7 +31,7 @@ public final class SpawnMobListener implements Listener {
         if (egg.hasDisplayName())
             entity.setCustomName(egg.getDisplayName());
 
-        EggIt.getEggHandler(type).updateEntity(entity, item);
+        EggIt.updateEntity(entity, item);
 
         if (entity instanceof Ageable) {
             ((Ageable) entity).setBaby();
