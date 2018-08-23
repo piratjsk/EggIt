@@ -1,13 +1,11 @@
 package net.piratjsk.eggit.listeners;
 
 import net.piratjsk.eggit.EggIt;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Slime;
+import org.bukkit.Particle;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -18,6 +16,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public final class CatchMobListener implements Listener {
 
@@ -34,6 +34,8 @@ public final class CatchMobListener implements Listener {
         final Entity entity = event.getRightClicked();
         if (canBeCaught(entity)) {
             catchMob(event.getPlayer(), entity);
+        } else {
+            event.getPlayer().playSound(entity.getLocation(), "");
         }
     }
 
@@ -49,25 +51,26 @@ public final class CatchMobListener implements Listener {
     }
 
     private boolean isEmptyEgg(final ItemStack item) {
-        return item.getType().equals(Material.EGG) && item.getItemMeta().getDisplayName().equals("Empty Egg");
+        return item.getType().equals(Material.EGG) && item.getItemMeta().getDisplayName().equals(ChatColor.RESET + "Empty Egg");
     }
 
     private boolean canBeCaught(final Entity entity) {
         if (!spawnEggExists(entity)) return false;
-        final ConfigurationSection config = this.plugin.getConfig().getConfigurationSection("mobsToCatch");
-        for (final String mob : config.getKeys(false)) {
-            if (!entity.getType().equals(EntityType.valueOf(mob.toUpperCase()))) continue;
+        final List<Map<?,?>> mobs = this.plugin.getConfig().getMapList("mobs");
+        for (final Map<?, ?> entry : mobs) {
+            final Map<String,String> mob = (Map<String, String>) entry;
+            if (!entity.getType().equals(EntityType.valueOf(mob.get("type").toUpperCase()))) continue;
 
             boolean mustBeBaby;
-            if (config.isBoolean(mob + ".baby")) {
-                mustBeBaby = config.getBoolean(mob + ".baby");
+            if (mob.containsKey("baby")) {
+                mustBeBaby = Boolean.valueOf(mob.get("baby"));
             } else {
                 mustBeBaby = entity instanceof Ageable;
             }
 
-            final boolean mustBeWeakened = config.getBoolean(mob + ".weak", false);
-            final double maxHealth = config.getDouble(mob + ".maxHealth", 0);
-            final int maxSize = config.getInt(mob + ".maxSize", 0);
+            final boolean mustBeWeakened = mob.containsKey("weak") ? Boolean.valueOf(mob.get("weak")): false;
+            final double maxHealth = mob.containsKey("maxHealth") ? Double.valueOf(mob.get("maxHealth")): 0;
+            final int maxSize = mob.containsKey("maxSize") ? Integer.valueOf(mob.get("maxSize")): 0;
 
             if (mustBeBaby) {
                 final Ageable ageableEntity = (Ageable) entity;
@@ -98,5 +101,17 @@ public final class CatchMobListener implements Listener {
     private boolean spawnEggExists(final Entity entity) {
         final String egg = entity.getType().name() + "_spawn_egg";
         return Material.getMaterial(egg.toUpperCase()) != null;
+    }
+
+    private void catchMob(final Player player, final Entity mob) {
+        final ItemStack item = player.getInventory().getItemInMainHand();
+        if (!isEmptyEgg(item)) return;
+        item.setAmount(item.getAmount()-1);
+        mob.remove();
+        mob.getLocation().getWorld().spawnParticle(Particle.SMOKE_LARGE,mob.getLocation(),2);
+        final String egg = mob.getType().name() + "_spawn_egg";
+        final ItemStack spawnEgg = new ItemStack(Material.getMaterial(egg.toUpperCase()));
+        mob.getLocation().getWorld().dropItem(mob.getLocation(), spawnEgg);
+
     }
 }
