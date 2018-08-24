@@ -76,7 +76,7 @@ public final class EggIt extends JavaPlugin {
                 final ItemMeta meta = egg.getItemMeta();
                 final List<String> lore = new ArrayList<>();
                 final Sheep sheep = (Sheep) entity;
-                lore.add(ChatColor.translateAlternateColorCodes('&',"&r&7Color: " + sheep.getColor().name().toLowerCase()));
+                lore.add(colorize("&r&7Color: " + sheep.getColor().name().toLowerCase()));
                 meta.setLore(lore);
                 egg.setItemMeta(meta);
             }
@@ -85,7 +85,7 @@ public final class EggIt extends JavaPlugin {
             public void updateEntity(Entity entity, ItemStack egg) {
                 if (!egg.getItemMeta().hasLore()) return;
                 final Sheep sheep = (Sheep) entity;
-                final String colorName = ChatColor.stripColor(egg.getItemMeta().getLore().get(0).replace("Color: ", ""));
+                final String colorName = decolorize(egg.getItemMeta().getLore().get(0).replace("Color: ", ""));
                 final DyeColor color = DyeColor.valueOf(colorName.toUpperCase());
                 sheep.setColor(color);
             }
