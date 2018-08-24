@@ -19,6 +19,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,12 +127,14 @@ public final class EggIt extends JavaPlugin {
                 final String encodedJumpStrength = Util.encodeAsColors(jumpStrength);
                 final String encodedSpeed = Util.encodeAsColors(speed);
 
+                final DecimalFormat df = new DecimalFormat("#.##");
+
                 final ItemMeta meta = egg.getItemMeta();
                 final List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 lore.add(colorize("&r&7Style: " + style.toLowerCase()));
                 lore.add(colorize("&r&7Color: " + color.toLowerCase()));
-                lore.add(colorize("&r&7Jump strength: " + Math.round(jumpHeight*100)/100 + " blocks&l" + encodedJumpStrength));
-                lore.add(colorize("&r&7Speed: " + Math.round(bps*100)/100 + " blocks/sec&l" + encodedSpeed));
+                lore.add(colorize("&r&7Jump strength: " + df.format(jumpHeight) + " blocks&l" + encodedJumpStrength));
+                lore.add(colorize("&r&7Speed: " + df.format(bps) + " blocks/sec&l" + encodedSpeed));
 
                 meta.setLore(lore);
                 egg.setItemMeta(meta);
