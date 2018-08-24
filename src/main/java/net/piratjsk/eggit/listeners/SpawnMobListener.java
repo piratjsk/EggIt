@@ -2,7 +2,6 @@ package net.piratjsk.eggit.listeners;
 
 import net.piratjsk.eggit.EggIt;
 import org.bukkit.Location;
-import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -32,10 +31,6 @@ public final class SpawnMobListener implements Listener {
             entity.setCustomName(egg.getDisplayName());
 
         EggIt.updateEntity(entity, item);
-
-        if (entity instanceof Ageable) {
-            ((Ageable) entity).setBaby();
-        }
 
     }
 }

@@ -8,9 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Sheep;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -155,6 +157,41 @@ public final class EggIt extends JavaPlugin {
                         final String encodedSpeed = line.split(ChatColor.BOLD.toString())[1];
                         final double speed = decodeFromColors(encodedSpeed);
                         horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+                    }
+                }
+            }
+        });
+        registerGenericEggHandler(new EggHandler() {
+            @Override
+            public void updateEgg(final ItemStack egg, final Entity entity) {
+                if (!(entity instanceof Ageable)) return;
+                final Ageable ageable = (Ageable) entity;
+
+                final String age = ageable.isAdult() ? "adult" : "baby";
+
+                final ItemMeta meta = egg.getItemMeta();
+                final List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                lore.add(colorize("&r&7Age: " + age));
+
+                meta.setLore(lore);
+                egg.setItemMeta(meta);
+            }
+
+            @Override
+            public void updateEntity(final Entity entity, final ItemStack egg) {
+                if (!egg.getItemMeta().hasLore()) return;
+                if (!(entity instanceof Ageable)) return;
+                final Ageable ageable = (Ageable) entity;
+
+                for (final String line : egg.getItemMeta().getLore()) {
+                    final String dline = decolorize(line);
+                    if (dline.startsWith("Age: ")) {
+                        final String age = dline.replace("Age: ", "");
+                        if (age.equals("adult"))
+                            ageable.setAdult();
+                        else
+                            ageable.setBaby();
+                        break;
                     }
                 }
             }
