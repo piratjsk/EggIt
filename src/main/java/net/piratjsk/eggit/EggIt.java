@@ -29,6 +29,7 @@ import static net.piratjsk.eggit.Util.decolorize;
 public final class EggIt extends JavaPlugin {
 
     private final Map<EntityType, EggHandler> eggHandlers = new HashMap<>();
+    private final List<EggHandler> genericEggHandlers = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -39,17 +40,25 @@ public final class EggIt extends JavaPlugin {
     }
 
     public static void updateEgg(final ItemStack egg, final Entity entity) {
-        if (!JavaPlugin.getPlugin(EggIt.class).eggHandlers.containsKey(entity.getType())) return;
-        JavaPlugin.getPlugin(EggIt.class).eggHandlers.get(entity.getType()).updateEgg(egg, entity);
+        final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
+        if (!plugin.eggHandlers.containsKey(entity.getType())) return;
+        plugin.eggHandlers.get(entity.getType()).updateEgg(egg, entity);
+        plugin.genericEggHandlers.forEach(handler -> handler.updateEgg(egg, entity));
     }
 
     public static void updateEntity(final Entity entity, final ItemStack egg) {
-        if (!JavaPlugin.getPlugin(EggIt.class).eggHandlers.containsKey(entity.getType())) return;
-        JavaPlugin.getPlugin(EggIt.class).eggHandlers.get(entity.getType()).updateEntity(entity, egg);
+        final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
+        if (!plugin.eggHandlers.containsKey(entity.getType())) return;
+        plugin.eggHandlers.get(entity.getType()).updateEntity(entity, egg);
+        plugin.genericEggHandlers.forEach(handler -> handler.updateEntity(entity, egg));
     }
 
     public static void registerEggHandler(final EntityType type, final EggHandler handler) {
         JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(type,handler);
+    }
+
+    public static void registerGenericEggHandler(final EggHandler handler) {
+        JavaPlugin.getPlugin(EggIt.class).genericEggHandlers.add(handler);
     }
 
     private void registerListeners() {
