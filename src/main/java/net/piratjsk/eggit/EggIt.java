@@ -5,31 +5,19 @@ import net.piratjsk.eggit.egghandlers.GenericEggHandlers;
 import net.piratjsk.eggit.listeners.CatchMobListener;
 import net.piratjsk.eggit.listeners.SpawnMobListener;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Sheep;
-import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static net.piratjsk.eggit.Util.colorize;
-import static net.piratjsk.eggit.Util.decodeFromColors;
-import static net.piratjsk.eggit.Util.decolorize;
 
 public final class EggIt extends JavaPlugin {
 
