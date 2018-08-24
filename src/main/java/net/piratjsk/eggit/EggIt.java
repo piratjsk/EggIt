@@ -6,8 +6,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Sheep;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -18,6 +21,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.piratjsk.eggit.Util.colorize;
+import static net.piratjsk.eggit.Util.decodeFromColors;
+import static net.piratjsk.eggit.Util.decolorize;
 
 public final class EggIt extends JavaPlugin {
 
@@ -81,6 +88,56 @@ public final class EggIt extends JavaPlugin {
                 final String colorName = ChatColor.stripColor(egg.getItemMeta().getLore().get(0).replace("Color: ", ""));
                 final DyeColor color = DyeColor.valueOf(colorName.toUpperCase());
                 sheep.setColor(color);
+            }
+        });
+        registerEggHandler(EntityType.HORSE, new EggHandler() {
+            @Override
+            public void updateEgg(final ItemStack egg, final Entity entity) {
+                final Horse horse = (Horse) entity;
+
+                final String style = horse.getStyle().name();
+                final String color = horse.getColor().name();
+                final double jumpStrength = horse.getJumpStrength();
+                final double jumpHeight = -0.1817584952 * Math.pow(jumpStrength, 3) + 3.689713992 * Math.pow(jumpStrength, 2) + 2.128599134 * jumpStrength - 0.343930367;
+                final double speed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+                final double bps = speed * 43;
+
+                final String encodedJumpStrength = Util.encodeAsColors(jumpStrength);
+                final String encodedSpeed = Util.encodeAsColors(speed);
+
+                final List<String> lore = new ArrayList<>();
+                lore.add(colorize("&r&7Style: " + style.toLowerCase()));
+                lore.add(colorize("&r&7Color: " + color.toLowerCase()));
+                lore.add(colorize("&r&7Jump strength: " + Math.round(jumpHeight*100)/100 + " blocks&l" + encodedJumpStrength));
+                lore.add(colorize("&r&7Speed: " + Math.round(bps*100)/100 + " blocks/sec&l" + encodedSpeed));
+
+                final ItemMeta meta = egg.getItemMeta();
+                meta.setLore(lore);
+                egg.setItemMeta(meta);
+            }
+            @Override
+            public void updateEntity(final Entity entity, final ItemStack egg) {
+                if (!egg.getItemMeta().hasLore()) return;
+                final Horse horse = (Horse) entity;
+
+                for (final String line : egg.getItemMeta().getLore()) {
+                    final String dline = decolorize(line);
+                    if (dline.startsWith("Style: ")) {
+                        final Horse.Style style = Horse.Style.valueOf(dline.replace("Style: ", "").toUpperCase());
+                        horse.setStyle(style);
+                    } else if (dline.startsWith("Color: ")) {
+                        final Horse.Color color = Horse.Color.valueOf(dline.replace("Color: ", "").toUpperCase());
+                        horse.setColor(color);
+                    } else if (dline.startsWith("Jump strength: ")) {
+                        final String encodedJumpStrength = line.split(ChatColor.BOLD.toString())[1];
+                        final double jumpStrength = decodeFromColors(encodedJumpStrength);
+                        horse.setJumpStrength(jumpStrength);
+                    } else if (dline.startsWith("Speed: ")) {
+                        final String encodedSpeed = line.split(ChatColor.BOLD.toString())[1];
+                        final double speed = decodeFromColors(encodedSpeed);
+                        horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+                    }
+                }
             }
         });
     }
