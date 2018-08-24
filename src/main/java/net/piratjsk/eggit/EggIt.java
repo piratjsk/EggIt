@@ -82,10 +82,14 @@ public final class EggIt extends JavaPlugin {
         registerEggHandler(EntityType.SHEEP, new EggHandler() {
             @Override
             public void updateEgg(ItemStack egg, Entity entity) {
-                final ItemMeta meta = egg.getItemMeta();
-                final List<String> lore = new ArrayList<>();
                 final Sheep sheep = (Sheep) entity;
-                lore.add(colorize("&r&7Color: " + sheep.getColor().name().toLowerCase()));
+
+                final String color = sheep.getColor().name();
+
+                final ItemMeta meta = egg.getItemMeta();
+                final List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                lore.add(colorize("&r&7Color: " + color.toLowerCase()));
+
                 meta.setLore(lore);
                 egg.setItemMeta(meta);
             }
@@ -94,9 +98,15 @@ public final class EggIt extends JavaPlugin {
             public void updateEntity(Entity entity, ItemStack egg) {
                 if (!egg.getItemMeta().hasLore()) return;
                 final Sheep sheep = (Sheep) entity;
-                final String colorName = decolorize(egg.getItemMeta().getLore().get(0).replace("Color: ", ""));
-                final DyeColor color = DyeColor.valueOf(colorName.toUpperCase());
-                sheep.setColor(color);
+                for (final String line : egg.getItemMeta().getLore()) {
+                    final String dline = decolorize(line);
+                    if (dline.startsWith("Color: ")) {
+                        final String colorName = dline.replace("Color: ", "");
+                        final DyeColor color = DyeColor.valueOf(colorName.toUpperCase());
+                        sheep.setColor(color);
+                        break;
+                    }
+                }
             }
         });
         registerEggHandler(EntityType.HORSE, new EggHandler() {
@@ -114,13 +124,13 @@ public final class EggIt extends JavaPlugin {
                 final String encodedJumpStrength = Util.encodeAsColors(jumpStrength);
                 final String encodedSpeed = Util.encodeAsColors(speed);
 
-                final List<String> lore = new ArrayList<>();
+                final ItemMeta meta = egg.getItemMeta();
+                final List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 lore.add(colorize("&r&7Style: " + style.toLowerCase()));
                 lore.add(colorize("&r&7Color: " + color.toLowerCase()));
                 lore.add(colorize("&r&7Jump strength: " + Math.round(jumpHeight*100)/100 + " blocks&l" + encodedJumpStrength));
                 lore.add(colorize("&r&7Speed: " + Math.round(bps*100)/100 + " blocks/sec&l" + encodedSpeed));
 
-                final ItemMeta meta = egg.getItemMeta();
                 meta.setLore(lore);
                 egg.setItemMeta(meta);
             }
