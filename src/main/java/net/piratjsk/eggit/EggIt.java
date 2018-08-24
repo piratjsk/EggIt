@@ -161,6 +161,35 @@ public final class EggIt extends JavaPlugin {
                 }
             }
         });
+        registerEggHandler(EntityType.OCELOT, new EggHandler() {
+            @Override
+            public void updateEgg(final ItemStack egg, final Entity entity) {
+                final Ocelot ocelot = (Ocelot) entity;
+
+                final String type = ocelot.getCatType().name();
+
+                final ItemMeta meta = egg.getItemMeta();
+                final List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                lore.add(colorize("&r&7Type: " + type.toLowerCase()));
+
+                meta.setLore(lore);
+                egg.setItemMeta(meta);
+            }
+            @Override
+            public void updateEntity(final Entity entity, final ItemStack egg) {
+                if (!egg.getItemMeta().hasLore()) return;
+                final Ocelot ocelot = (Ocelot) entity;
+
+                for (final String line : egg.getItemMeta().getLore()) {
+                    final String dline = decolorize(line);
+                    if (dline.startsWith("Type: ")) {
+                        final Ocelot.Type type = Ocelot.Type.valueOf(dline.replace("Type: ", "").toUpperCase());
+                        ocelot.setCatType(type);
+                        break;
+                    }
+                }
+            }
+        });
         registerGenericEggHandler(new EggHandler() {
             @Override
             public void updateEgg(final ItemStack egg, final Entity entity) {
