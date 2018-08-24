@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public final class SpawnMobListener implements Listener {
 
@@ -24,12 +23,6 @@ public final class SpawnMobListener implements Listener {
         final EntityType type = EntityType.valueOf(typeName);
         final Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation().add(0.5,0,0.5);
         final Entity entity = loc.getWorld().spawnEntity(loc, type);
-
-        final ItemMeta egg = item.getItemMeta();
-
-        if (egg.hasDisplayName())
-            entity.setCustomName(egg.getDisplayName());
-
         EggIt.updateEntity(entity, item);
 
     }

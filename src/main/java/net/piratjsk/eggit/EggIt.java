@@ -196,6 +196,21 @@ public final class EggIt extends JavaPlugin {
                 }
             }
         });
+        registerGenericEggHandler(new EggHandler() {
+            @Override
+            public void updateEgg(final ItemStack egg, final Entity entity) {
+                if (entity.getCustomName() == null) return;
+
+                final ItemMeta meta = egg.getItemMeta();
+                meta.setDisplayName(entity.getCustomName());
+                egg.setItemMeta(meta);
+            }
+            @Override
+            public void updateEntity(final Entity entity, final ItemStack egg) {
+                if (!egg.getItemMeta().hasDisplayName()) return;
+                entity.setCustomName(egg.getItemMeta().getDisplayName());
+            }
+        });
     }
 
 }
