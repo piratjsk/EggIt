@@ -32,10 +32,12 @@ public final class EggIt extends JavaPlugin {
     }
 
     public static void updateEgg(final ItemStack egg, final Entity entity) {
+        if (!JavaPlugin.getPlugin(EggIt.class).eggHandlers.containsKey(entity.getType())) return;
         JavaPlugin.getPlugin(EggIt.class).eggHandlers.get(entity.getType()).updateEgg(egg, entity);
     }
 
     public static void updateEntity(final Entity entity, final ItemStack egg) {
+        if (!JavaPlugin.getPlugin(EggIt.class).eggHandlers.containsKey(entity.getType())) return;
         JavaPlugin.getPlugin(EggIt.class).eggHandlers.get(entity.getType()).updateEntity(entity, egg);
     }
 
