@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Sheep;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -186,6 +187,45 @@ public final class EggIt extends JavaPlugin {
                         final Ocelot.Type type = Ocelot.Type.valueOf(dline.replace("Type: ", "").toUpperCase());
                         ocelot.setCatType(type);
                         break;
+                    }
+                }
+            }
+        });
+        registerEggHandler(EntityType.VILLAGER, new EggHandler() {
+            @Override
+            public void updateEgg(final ItemStack egg, final Entity entity) {
+                final Villager villager = (Villager) entity;
+
+                final String career = villager.getCareer().name();
+                final String profession = villager.getProfession().name();
+                final int riches = villager.getRiches();
+
+                final ItemMeta meta = egg.getItemMeta();
+                final List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+                lore.add(colorize("&r&7Profession: " + profession.toLowerCase()));
+                lore.add(colorize("&r&7Career: " + career.toLowerCase()));
+                if (riches > 0)
+                    lore.add(colorize("&r&7Riches: " + riches + " emeralds"));
+
+                meta.setLore(lore);
+                egg.setItemMeta(meta);
+            }
+            @Override
+            public void updateEntity(final Entity entity, final ItemStack egg) {
+                if (!egg.getItemMeta().hasLore()) return;
+                final Villager villager = (Villager) entity;
+
+                for (final String line : egg.getItemMeta().getLore()) {
+                    final String dline = decolorize(line);
+                    if (dline.startsWith("Career: ")) {
+                        final Villager.Career career = Villager.Career.valueOf(dline.replace("Career: ", "").toUpperCase());
+                        villager.setCareer(career);
+                    } else if (dline.startsWith("Profession: ")) {
+                        final Villager.Profession profession = Villager.Profession.valueOf(dline.replace("Profession: ", "").toUpperCase());
+                        villager.setProfession(profession);
+                    } else if (dline.startsWith("Riches: ")) {
+                        final int riches = Integer.valueOf(dline.replace("Riches: ", "").replace(" emeralds", ""));
+                        villager.setRiches(riches);
                     }
                 }
             }
