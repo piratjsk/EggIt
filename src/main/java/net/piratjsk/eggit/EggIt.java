@@ -14,15 +14,12 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public final class EggIt extends JavaPlugin {
 
-    private final Map<EntityType, EggHandler> eggHandlers = new HashMap<>();
-    private final List<EggHandler> genericEggHandlers = new ArrayList<>();
+    private final Map<String, EggHandler> eggHandlers = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -43,24 +40,24 @@ public final class EggIt extends JavaPlugin {
 
     public static void updateEgg(final ItemStack egg, final Entity entity) {
         final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
-        if (!plugin.eggHandlers.containsKey(entity.getType())) return;
-        plugin.eggHandlers.get(entity.getType()).updateEgg(egg, entity);
-        plugin.genericEggHandlers.forEach(handler -> handler.updateEgg(egg, entity));
+        if (!plugin.eggHandlers.containsKey(entity.getType().name())) return;
+        plugin.eggHandlers.get(entity.getType().name()).updateEgg(egg, entity);
+        plugin.eggHandlers.forEach((id, handler) -> handler.updateEgg(egg, entity));
     }
 
     public static void updateEntity(final Entity entity, final ItemStack egg) {
         final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
-        if (!plugin.eggHandlers.containsKey(entity.getType())) return;
-        plugin.eggHandlers.get(entity.getType()).updateEntity(entity, egg);
-        plugin.genericEggHandlers.forEach(handler -> handler.updateEntity(entity, egg));
+        if (!plugin.eggHandlers.containsKey(entity.getType().name())) return;
+        plugin.eggHandlers.get(entity.getType().name()).updateEntity(entity, egg);
+        plugin.eggHandlers.forEach((id, handler) -> handler.updateEntity(entity, egg));
     }
 
     public static void registerEggHandler(final EntityType type, final EggHandler handler) {
-        JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(type,handler);
+        JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(type.name(),handler);
     }
 
-    public static void registerGenericEggHandler(final EggHandler handler) {
-        JavaPlugin.getPlugin(EggIt.class).genericEggHandlers.add(handler);
+    public static void registerEggHandler(final String id, final EggHandler handler) {
+        JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(id, handler);
     }
 
     private void registerListeners() {

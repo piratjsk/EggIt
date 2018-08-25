@@ -16,7 +16,7 @@ import static net.piratjsk.eggit.Util.decolorize;
 public class GenericEggHandlers {
 
     public static void init() {
-        EggIt.registerGenericEggHandler(new EggHandler() {
+        EggIt.registerEggHandler("age", new EggHandler() {
             @Override
             public void updateEgg(final ItemStack egg, final Entity entity) {
                 if (!(entity instanceof Ageable)) return;
@@ -51,7 +51,7 @@ public class GenericEggHandlers {
                 }
             }
         });
-        EggIt.registerGenericEggHandler(new EggHandler() {
+        EggIt.registerEggHandler("customName", new EggHandler() {
             @Override
             public void updateEgg(final ItemStack egg, final Entity entity) {
                 if (entity.getCustomName() == null) return;
