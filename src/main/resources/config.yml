@@ -1,33 +1,89 @@
+# Crafting recipe for Empty Egg item.
+#
+# to disable
+# > recipe: false
+#
+# shapeless
+# > recipe:
+# >   ingredients:
+# >     - <item_name>
+# >     ...
+#
+# shaped
+# > recipe:
+# >   shape:
+# >     - " A "
+# >     - "RR "
+# >     - "ARR "
+# >   ingredients:
+# >     A: <item_name>
+# >     R: <item_name>
+recipe:
+  shape:
+    - " I "
+    - "IDI"
+    - " I "
+  ingredients:
+    I: iron_ingot
+    D: diamond
+
+# Mobs that can be catched using empty egg and aditional conditions that have to be met to catch specific mob.
 mobs:
   # - type: mob_type - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
-  #   baby: true/false - if mob have to be in baby form (by default all mobs that have baby form require it) (works only for mobs that have baby form)
-  #   weak: true/false - if mob have to be under effect of potion of weakness
-  #   maxHealth: 4 - max health mob can have to be caught
-  #   maxSize: 1 - max size mob can be to be caught (works only for slime and magma_cube)
+  #   conditions:
+  #     condition_name: <condition_value>
+  #     ...
   - type: BAT
   - type: CHICKEN
+    conditions:
+      age: baby
   - type: PIG
+    conditions:
+      age: baby
   - type: COW
+    conditions:
+      age: baby
   - type: MUSHROOM_COW
+    conditions:
+      age: baby
   - type: SHEEP
+    conditions:
+      age: baby
   - type: HORSE
+    conditions:
+      age: baby
   - type: MULE
+    conditions:
+      age: baby
   - type: DONKEY
+    conditions:
+      age: baby
   - type: OCELOT
+    conditions:
+      age: baby
   - type: WOLF
+    conditions:
+      age: baby
   - type: VILLAGER
+    conditions:
+      age: baby
 
   - type: SLIME
-    maxSize: 1
+    conditions:
+      maxSize: 1
   - type: MAGMA_CUBE
-    maxSize: 1
+    conditions:
+      maxSize: 1
 
   - type: ZOMBIE
-    weak: true
+    conditions:
+      weak: true
     maxHealth: 4
   - type: PIG_ZOMBIE
-    weak: true
-    maxHealth: 4
+    conditions:
+      weak: true
+      maxHealth: 4
   - type: SILVERFISH
-    weak: true
+    conditions:
+      weak: true
   - type: ENDERMITE
