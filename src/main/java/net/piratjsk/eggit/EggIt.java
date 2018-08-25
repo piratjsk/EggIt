@@ -128,7 +128,9 @@ public final class EggIt extends JavaPlugin {
         final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
         final String type = entity.getType().name();
         final List<Map<?, ?>> mobs = plugin.getConfig().getMapList("mobs");
-        final Map<?,?> mobConfig = mobs.stream().filter(mob -> ((String)mob.get("type")).equalsIgnoreCase(type)).findFirst().orElse(Collections.emptyMap());
+        final Map<?,?> mobConfig = mobs.stream().filter(
+                mob -> ((String)mob.get("type")).equalsIgnoreCase(type)).findFirst().orElse(Collections.emptyMap()
+        );
         if (mobConfig.isEmpty()) return false;
         if (!mobConfig.containsKey("conditions")) return true;
         final Map<String, ?> conditions = (Map<String, ?>) mobConfig.get("conditions");
