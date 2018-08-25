@@ -22,21 +22,37 @@ public class EggItCommand implements CommandExecutor {
     @Override
     public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
         if (args.length > 0 && args[0].equalsIgnoreCase("egg")) {
-            this.giveEmptyEggCommand(sender, args);
-            return true;
+            return this.giveEmptyEggCommand(sender, args);
         }
         if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
+            if (!sender.hasPermission("eggit.reload")) {
+                sender.sendMessage(PREFIX + "&cYou can't do that.");
+                return true;
+            }
             plugin.reloadConfig();
             sender.sendMessage(colorize(PREFIX + "&aConfig reloaded!"));
             return true;
         }
-        sender.sendMessage(colorize(PREFIX + "Commands:"));
-        sender.sendMessage(colorize(PREFIX + "/eggit egg [amount] [player] &7- gives empty egg item"));
-        sender.sendMessage(colorize(PREFIX + "/eggit reload &7- reloads plugin configuration"));
+        return this.infoCommand(sender);
+    }
+
+    private boolean infoCommand(final CommandSender sender) {
+        if (sender.hasPermission("eggit.give") || sender.hasPermission("eggit.reload")) {
+            sender.sendMessage(colorize(PREFIX + "Commands:"));
+            if (sender.hasPermission("eggit.give"))
+                sender.sendMessage(colorize(PREFIX + "/eggit egg [amount] [player] &7- gives empty egg item"));
+            if (sender.hasPermission("eggit.reload"))
+                sender.sendMessage(colorize(PREFIX + "/eggit reload &7- reloads plugin configuration"));
+        } else
+            sender.sendMessage(colorize(PREFIX + "Eggs!"));
         return true;
     }
 
-    private void giveEmptyEggCommand(final CommandSender sender, final String[] args) {
+    private boolean giveEmptyEggCommand(final CommandSender sender, final String[] args) {
+        if (!sender.hasPermission("eggit.give")) {
+            sender.sendMessage(PREFIX + "&cYou can't do that.");
+            return true;
+        }
         final ItemStack egg = EggIt.getEmptyEgg();
         if (args.length > 1) {
             final int amount = Integer.valueOf(args[1]);
@@ -49,19 +65,20 @@ public class EggItCommand implements CommandExecutor {
             if (offlinePlayer.isOnline()) {
                 final Player player = (Player) offlinePlayer;
                 player.getInventory().addItem(egg);
-                return;
+                return true;
             }
             sender.sendMessage(colorize("[EggIt] Can't find player '" + playerName + "'."));
-            return;
+            return true;
         }
 
         if (!(sender instanceof Player)) {
             sender.sendMessage(colorize("[EggIt] Please specify player name: /eggit egg [amount] [player]"));
-            return;
+            return true;
         }
 
         final Player player = (Player) sender;
         player.getInventory().addItem(egg);
+        return true;
     }
 
 }
