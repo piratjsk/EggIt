@@ -53,11 +53,19 @@ public final class EggIt extends JavaPlugin {
     }
 
     public static void registerEggHandler(final EntityType type, final EggHandler handler) {
-        JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(type.name(),handler);
+        registerEggHandler(type.name(), handler);
     }
 
     public static void registerEggHandler(final String id, final EggHandler handler) {
         JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(id, handler);
+    }
+
+    public static void unregisterEggHandler(final EntityType type) {
+        unregisterEggHandler(type.name());
+    }
+
+    public static void unregisterEggHandler(final String id) {
+        JavaPlugin.getPlugin(EggIt.class).eggHandlers.remove(id);
     }
 
     private void registerListeners() {
