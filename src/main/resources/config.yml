@@ -87,3 +87,10 @@ mobs:
     conditions:
       weak: true
   - type: ENDERMITE
+
+# Sounds played on successfull catch and when mob can't be caught.
+# https://hub.spigotmc.org/javadocs/spigot/index.html?overview-summary.html
+# Set to 'false' to disable.
+sounds:
+  success: ENTITY_CHICKEN_EGG
+  failure: ENTITY_VILLAGER_NO

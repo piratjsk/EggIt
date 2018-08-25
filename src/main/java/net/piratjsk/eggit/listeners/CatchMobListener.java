@@ -31,9 +31,11 @@ public final class CatchMobListener implements Listener {
         final Player player = event.getPlayer();
         if (EggIt.canBeCaught(entity, player)) {
             catchMob(player, entity);
-            player.playSound(entity.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1.0f, 1.0f);
+            if (!plugin.getConfig().isBoolean("sounds") && !plugin.getConfig().isBoolean("sounds.success"))
+                player.playSound(entity.getLocation(), Sound.valueOf(plugin.getConfig().getString("sounds.success")), 1.0f, 1.0f);
         } else {
-            player.playSound(entity.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
+            if (!plugin.getConfig().isBoolean("sounds") && !plugin.getConfig().isBoolean("sounds.failure"))
+                player.playSound(entity.getLocation(), Sound.valueOf(plugin.getConfig().getString("sounds.failure")), 1.0f, 1.0f);
         }
     }
 
