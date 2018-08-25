@@ -1,5 +1,6 @@
 package net.piratjsk.eggit;
 
+import net.piratjsk.eggit.catchconditions.CatchConditions;
 import net.piratjsk.eggit.egghandlers.AnimalEggHandlers;
 import net.piratjsk.eggit.egghandlers.GenericEggHandlers;
 import net.piratjsk.eggit.listeners.CatchMobListener;
@@ -31,6 +32,7 @@ public final class EggIt extends JavaPlugin {
         this.registerListeners();
         this.registerEmptyEggRecipe();
         this.registerDefaultEggHandlers();
+        this.registerDefaultCatchConditions();
         this.getCommand("eggit").setExecutor(new EggItCommand());
     }
 
@@ -119,6 +121,10 @@ public final class EggIt extends JavaPlugin {
     private void registerDefaultEggHandlers() {
         AnimalEggHandlers.init();
         GenericEggHandlers.init();
+    }
+
+    private void registerDefaultCatchConditions() {
+        CatchConditions.init();
     }
 
 }
