@@ -30,6 +30,15 @@ public final class EggIt extends JavaPlugin {
         this.registerListeners();
         this.registerEmptyEggRecipe();
         this.registerDefaultEggHandlers();
+        this.getCommand("eggit").setExecutor(new EggItCommand());
+    }
+
+    public static ItemStack getEmptyEgg() {
+        final ItemStack egg = new ItemStack(Material.EGG);
+        final ItemMeta meta = egg.getItemMeta();
+        meta.setDisplayName(ChatColor.RESET + "Empty Egg");
+        egg.setItemMeta(meta);
+        return egg;
     }
 
     public static void updateEgg(final ItemStack egg, final Entity entity) {
@@ -60,10 +69,7 @@ public final class EggIt extends JavaPlugin {
     }
 
     private void registerEmptyEggRecipe() {
-        final ItemStack egg = new ItemStack(Material.EGG);
-        final ItemMeta meta = egg.getItemMeta();
-        meta.setDisplayName(ChatColor.RESET + "Empty Egg");
-        egg.setItemMeta(meta);
+        final ItemStack egg = EggIt.getEmptyEgg();
         final ShapedRecipe recipe = new ShapedRecipe(NamespacedKey.minecraft(this.getName().toLowerCase()), egg);
         recipe.shape(" I ", "IDI", " I ");
         recipe.setIngredient('I', Material.IRON_INGOT);
