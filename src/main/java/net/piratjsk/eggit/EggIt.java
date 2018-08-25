@@ -36,7 +36,7 @@ public final class EggIt extends JavaPlugin {
         this.registerEmptyEggRecipe();
         this.registerDefaultEggHandlers();
         this.registerDefaultCatchConditions();
-        this.getCommand("eggit").setExecutor(new EggItCommand());
+        this.getCommand("eggit").setExecutor(new EggItCommand(this));
     }
 
     private void registerListeners() {
@@ -111,16 +111,32 @@ public final class EggIt extends JavaPlugin {
 
     public static void updateEgg(final ItemStack egg, final Entity entity) {
         final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
-        if (!plugin.eggHandlers.containsKey(entity.getType().name())) return;
-        plugin.eggHandlers.get(entity.getType().name()).updateEgg(egg, entity);
-        plugin.eggHandlers.forEach((id, handler) -> handler.updateEgg(egg, entity));
+        plugin.eggHandlers.forEach((id, handler) -> {
+            try {
+                EntityType.valueOf(id.toUpperCase());
+                // this is entity type specific egg handler
+                if (!id.equalsIgnoreCase(entity.getType().name())) return; // handler is not for this type of entity
+                handler.updateEgg(egg, entity);
+            } catch (final IllegalArgumentException ignored) {
+                // this is not entity type specific egg handler
+                handler.updateEgg(egg, entity);
+            }
+        });
     }
 
     public static void updateEntity(final Entity entity, final ItemStack egg) {
         final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
-        if (!plugin.eggHandlers.containsKey(entity.getType().name())) return;
-        plugin.eggHandlers.get(entity.getType().name()).updateEntity(entity, egg);
-        plugin.eggHandlers.forEach((id, handler) -> handler.updateEntity(entity, egg));
+        plugin.eggHandlers.forEach((id, handler) -> {
+            try {
+                EntityType.valueOf(id.toUpperCase());
+                // this is entity type specific egg handler
+                if (!id.equalsIgnoreCase(entity.getType().name())) return; // handler is not for this type of entity
+                handler.updateEntity(entity, egg);
+            } catch (final IllegalArgumentException ignored) {
+                // this is not entity type specific egg handler
+                handler.updateEntity(entity, egg);
+            }
+        });
     }
 
     public static boolean canBeCaught(final Entity entity, final Player player) {
