@@ -26,7 +26,7 @@ public class EggItCommand implements CommandExecutor {
         }
         if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("eggit.reload")) {
-                sender.sendMessage(PREFIX + "&cYou can't do that.");
+                sender.sendMessage(colorize(PREFIX + "&cYou can't do that."));
                 return true;
             }
             plugin.reloadConfig();
@@ -50,7 +50,7 @@ public class EggItCommand implements CommandExecutor {
 
     private boolean giveEmptyEggCommand(final CommandSender sender, final String[] args) {
         if (!sender.hasPermission("eggit.give")) {
-            sender.sendMessage(PREFIX + "&cYou can't do that.");
+            sender.sendMessage(colorize(PREFIX + "&cYou can't do that."));
             return true;
         }
         final ItemStack egg = EggIt.getEmptyEgg();
