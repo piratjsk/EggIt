@@ -27,7 +27,7 @@ recipe:
     I: iron_ingot
     D: diamond
 
-# Mobs that can be catched using empty egg and aditional conditions that have to be met to catch specific mob.
+# Mobs that can be caught using empty egg and additional conditions that have to be met to catch specific mob.
 mobs:
   # - type: mob_type - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
   #   conditions:
