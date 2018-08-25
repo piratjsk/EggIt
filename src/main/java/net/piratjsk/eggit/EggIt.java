@@ -9,17 +9,21 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class EggIt extends JavaPlugin {
 
     private final Map<String, EggHandler> eggHandlers = new HashMap<>();
+    private final Map<String, CatchCondition> catchConditions = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -66,6 +70,36 @@ public final class EggIt extends JavaPlugin {
 
     public static void unregisterEggHandler(final String id) {
         JavaPlugin.getPlugin(EggIt.class).eggHandlers.remove(id);
+    }
+
+    public static boolean canBeCaught(final Entity entity, final Player player) {
+        if (!spawnEggExists(entity)) return false;
+        final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
+        final String type = entity.getType().name();
+        final List<Map<?, ?>> mobs = plugin.getConfig().getMapList("mobs");
+        final Map<?,?> mobConfig = mobs.stream().filter(mob -> ((String)mob.get("type")).equalsIgnoreCase(type)).findFirst().orElse(Collections.emptyMap());
+        if (mobConfig.isEmpty()) return false;
+        if (!mobConfig.containsKey("conditions")) return true;
+        final Map<String, ?> conditions = (Map<String, ?>) mobConfig.get("conditions");
+        for (final String conditionId : conditions.keySet()) {
+            if (!plugin.catchConditions.containsKey(conditionId)) continue;
+            if (!plugin.catchConditions.get(conditionId).check(entity, player, conditions.get(conditionId)))
+                return false;
+        }
+        return true;
+    }
+
+    private static boolean spawnEggExists(final Entity entity) {
+        final String egg = entity.getType().name() + "_spawn_egg";
+        return Material.getMaterial(egg.toUpperCase()) != null;
+    }
+
+    public static void registerCatchCondition(final String id, final CatchCondition condition) {
+        JavaPlugin.getPlugin(EggIt.class).catchConditions.put(id, condition);
+    }
+
+    public static void unregisterCatchCondition(final String id) {
+        JavaPlugin.getPlugin(EggIt.class).catchConditions.remove(id);
     }
 
     private void registerListeners() {
