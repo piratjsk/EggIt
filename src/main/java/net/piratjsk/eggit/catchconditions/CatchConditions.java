@@ -39,6 +39,10 @@ public final class CatchConditions {
             final LivingEntity livingEntity = (LivingEntity) entity;
             return weak == (livingEntity.getPotionEffect(PotionEffectType.WEAKNESS) != null);
         });
+        EggIt.registerCatchCondition("permission", (entity, player, data) -> {
+            final String permission = (String) data;
+            return player.hasPermission(permission);
+        });
     }
 
 }
