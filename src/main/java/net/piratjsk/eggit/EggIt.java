@@ -36,6 +36,53 @@ public final class EggIt extends JavaPlugin {
         this.getCommand("eggit").setExecutor(new EggItCommand());
     }
 
+    private void registerListeners() {
+        this.getServer().getPluginManager().registerEvents(new CatchMobListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new SpawnMobListener(), this);
+    }
+
+    private void registerEmptyEggRecipe() {
+        final ItemStack egg = EggIt.getEmptyEgg();
+        final ShapedRecipe recipe = new ShapedRecipe(NamespacedKey.minecraft(this.getName().toLowerCase()), egg);
+        recipe.shape(" I ", "IDI", " I ");
+        recipe.setIngredient('I', Material.IRON_INGOT);
+        recipe.setIngredient('D', Material.DIAMOND);
+        this.getServer().addRecipe(recipe);
+    }
+
+    private void registerDefaultEggHandlers() {
+        AnimalEggHandlers.init();
+        GenericEggHandlers.init();
+    }
+
+    private void registerDefaultCatchConditions() {
+        CatchConditions.init();
+    }
+
+    public static void registerEggHandler(final EntityType type, final EggHandler handler) {
+        registerEggHandler(type.name(), handler);
+    }
+
+    public static void registerEggHandler(final String id, final EggHandler handler) {
+        JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(id, handler);
+    }
+
+    public static void unregisterEggHandler(final EntityType type) {
+        unregisterEggHandler(type.name());
+    }
+
+    public static void unregisterEggHandler(final String id) {
+        JavaPlugin.getPlugin(EggIt.class).eggHandlers.remove(id);
+    }
+
+    public static void registerCatchCondition(final String id, final CatchCondition condition) {
+        JavaPlugin.getPlugin(EggIt.class).catchConditions.put(id, condition);
+    }
+
+    public static void unregisterCatchCondition(final String id) {
+        JavaPlugin.getPlugin(EggIt.class).catchConditions.remove(id);
+    }
+
     public static ItemStack getEmptyEgg() {
         final ItemStack egg = new ItemStack(Material.EGG);
         final ItemMeta meta = egg.getItemMeta();
@@ -58,22 +105,6 @@ public final class EggIt extends JavaPlugin {
         plugin.eggHandlers.forEach((id, handler) -> handler.updateEntity(entity, egg));
     }
 
-    public static void registerEggHandler(final EntityType type, final EggHandler handler) {
-        registerEggHandler(type.name(), handler);
-    }
-
-    public static void registerEggHandler(final String id, final EggHandler handler) {
-        JavaPlugin.getPlugin(EggIt.class).eggHandlers.put(id, handler);
-    }
-
-    public static void unregisterEggHandler(final EntityType type) {
-        unregisterEggHandler(type.name());
-    }
-
-    public static void unregisterEggHandler(final String id) {
-        JavaPlugin.getPlugin(EggIt.class).eggHandlers.remove(id);
-    }
-
     public static boolean canBeCaught(final Entity entity, final Player player) {
         if (!spawnEggExists(entity)) return false;
         final EggIt plugin = JavaPlugin.getPlugin(EggIt.class);
@@ -94,37 +125,6 @@ public final class EggIt extends JavaPlugin {
     private static boolean spawnEggExists(final Entity entity) {
         final String egg = entity.getType().name() + "_spawn_egg";
         return Material.getMaterial(egg.toUpperCase()) != null;
-    }
-
-    public static void registerCatchCondition(final String id, final CatchCondition condition) {
-        JavaPlugin.getPlugin(EggIt.class).catchConditions.put(id, condition);
-    }
-
-    public static void unregisterCatchCondition(final String id) {
-        JavaPlugin.getPlugin(EggIt.class).catchConditions.remove(id);
-    }
-
-    private void registerListeners() {
-        this.getServer().getPluginManager().registerEvents(new CatchMobListener(this), this);
-        this.getServer().getPluginManager().registerEvents(new SpawnMobListener(), this);
-    }
-
-    private void registerEmptyEggRecipe() {
-        final ItemStack egg = EggIt.getEmptyEgg();
-        final ShapedRecipe recipe = new ShapedRecipe(NamespacedKey.minecraft(this.getName().toLowerCase()), egg);
-        recipe.shape(" I ", "IDI", " I ");
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('D', Material.DIAMOND);
-        this.getServer().addRecipe(recipe);
-    }
-
-    private void registerDefaultEggHandlers() {
-        AnimalEggHandlers.init();
-        GenericEggHandlers.init();
-    }
-
-    private void registerDefaultCatchConditions() {
-        CatchConditions.init();
     }
 
 }
