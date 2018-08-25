@@ -5,14 +5,17 @@ import net.piratjsk.eggit.egghandlers.AnimalEggHandlers;
 import net.piratjsk.eggit.egghandlers.GenericEggHandlers;
 import net.piratjsk.eggit.listeners.CatchMobListener;
 import net.piratjsk.eggit.listeners.SpawnMobListener;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -42,12 +45,27 @@ public final class EggIt extends JavaPlugin {
     }
 
     private void registerEmptyEggRecipe() {
+        if (this.getConfig().isBoolean("recipe")) return;
+        final ConfigurationSection recipeConfig = this.getConfig().getConfigurationSection("recipe");
         final ItemStack egg = EggIt.getEmptyEgg();
-        final ShapedRecipe recipe = new ShapedRecipe(NamespacedKey.minecraft(this.getName().toLowerCase()), egg);
-        recipe.shape(" I ", "IDI", " I ");
-        recipe.setIngredient('I', Material.IRON_INGOT);
-        recipe.setIngredient('D', Material.DIAMOND);
-        this.getServer().addRecipe(recipe);
+        final NamespacedKey nkey = new NamespacedKey(this, "empty_egg");
+        if (recipeConfig.getKeys(false).contains("shape")) {
+            final ShapedRecipe recipe = new ShapedRecipe(nkey, egg);
+            recipe.shape(recipeConfig.getStringList("shape").toArray(new String[3]));
+            recipeConfig.getConfigurationSection("ingredients").getKeys(false).forEach( key -> {
+                final char ingredientKey = key.toCharArray()[0];
+                final String ingredientTypeName = recipeConfig.getString("ingredients." + key).toUpperCase();
+                final Material ingredientType = Material.getMaterial(ingredientTypeName);
+                recipe.setIngredient(ingredientKey, ingredientType);
+            });
+            Bukkit.addRecipe(recipe);
+        } else {
+            final ShapelessRecipe recipe = new ShapelessRecipe(nkey, egg);
+            recipeConfig.getStringList("ingredients").forEach(
+                    ingredient -> recipe.addIngredient(Material.getMaterial(ingredient.toUpperCase()))
+            );
+            Bukkit.addRecipe(recipe);
+        }
     }
 
     private void registerDefaultEggHandlers() {
