@@ -88,7 +88,7 @@ mobs:
       weak: true
   - type: ENDERMITE
 
-# Sounds played on successfull catch and when mob can't be caught.
+# Sounds played on successful catch and when mob can't be caught.
 # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
 # Set to 'false' to disable.
 sounds:
