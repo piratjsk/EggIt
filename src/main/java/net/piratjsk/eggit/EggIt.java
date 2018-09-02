@@ -6,7 +6,6 @@ import net.piratjsk.eggit.egghandlers.GenericEggHandlers;
 import net.piratjsk.eggit.listeners.CatchMobListener;
 import net.piratjsk.eggit.listeners.SpawnMobListener;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,6 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.piratjsk.eggit.Util.colorize;
 
 public final class EggIt extends JavaPlugin {
 
@@ -45,26 +47,31 @@ public final class EggIt extends JavaPlugin {
     }
 
     private void registerEmptyEggRecipe() {
-        if (this.getConfig().isBoolean("recipe")) return;
-        final ConfigurationSection recipeConfig = this.getConfig().getConfigurationSection("recipe");
+        if (this.getConfig().isBoolean("emptyEgg.recipe")) return;
+        final NamespacedKey key = new NamespacedKey(this, "empty_egg");
+        final ConfigurationSection recipeConfig = this.getConfig().getConfigurationSection("emptyEgg.recipe");
+        final Recipe emptyEggRecipe = this.getEmptyEggRecipeFromConfig(key, recipeConfig);
+        Bukkit.addRecipe(emptyEggRecipe);
+    }
+
+    private Recipe getEmptyEggRecipeFromConfig(final NamespacedKey key, final ConfigurationSection config) {
         final ItemStack egg = EggIt.getEmptyEgg();
-        final NamespacedKey nkey = new NamespacedKey(this, "empty_egg");
-        if (recipeConfig.getKeys(false).contains("shape")) {
-            final ShapedRecipe recipe = new ShapedRecipe(nkey, egg);
-            recipe.shape(recipeConfig.getStringList("shape").toArray(new String[3]));
-            recipeConfig.getConfigurationSection("ingredients").getKeys(false).forEach( key -> {
-                final char ingredientKey = key.toCharArray()[0];
-                final String ingredientTypeName = recipeConfig.getString("ingredients." + key).toUpperCase();
+        if (config.getKeys(false).contains("shape")) {
+            final ShapedRecipe recipe = new ShapedRecipe(key, egg);
+            recipe.shape(config.getStringList("shape").toArray(new String[3]));
+            config.getConfigurationSection("ingredients").getKeys(false).forEach( ikey -> {
+                final char ingredientKey = ikey.toCharArray()[0];
+                final String ingredientTypeName = config.getString("ingredients." + ikey).toUpperCase();
                 final Material ingredientType = Material.getMaterial(ingredientTypeName);
                 recipe.setIngredient(ingredientKey, ingredientType);
             });
-            Bukkit.addRecipe(recipe);
+            return recipe;
         } else {
-            final ShapelessRecipe recipe = new ShapelessRecipe(nkey, egg);
-            recipeConfig.getStringList("ingredients").forEach(
+            final ShapelessRecipe recipe = new ShapelessRecipe(key, egg);
+            config.getStringList("ingredients").forEach(
                     ingredient -> recipe.addIngredient(Material.getMaterial(ingredient.toUpperCase()))
             );
-            Bukkit.addRecipe(recipe);
+            return recipe;
         }
     }
 
@@ -102,10 +109,20 @@ public final class EggIt extends JavaPlugin {
     }
 
     public static ItemStack getEmptyEgg() {
-        final ItemStack egg = new ItemStack(Material.EGG);
+        final ConfigurationSection config = JavaPlugin.getPlugin(EggIt.class).getConfig().getConfigurationSection("emptyEgg");
+        final Material type = Material.matchMaterial(config.getString("item").toUpperCase());
+        final String name = colorize("&r" + config.getString("name"));
+        final List<String> lore = config.getStringList("lore");
+
+        final ItemStack egg = new ItemStack(type);
         final ItemMeta meta = egg.getItemMeta();
-        meta.setDisplayName(ChatColor.RESET + "Empty Egg");
+        meta.setDisplayName(name);
+        if (!lore.isEmpty()) {
+            lore.forEach( line -> line = colorize(line));
+            meta.setLore(lore);
+        }
         egg.setItemMeta(meta);
+
         return egg;
     }
 
