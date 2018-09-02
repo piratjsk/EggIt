@@ -1,31 +1,32 @@
-# Crafting recipe for Empty Egg item.
-#
-# to disable
-# > recipe: false
-#
-# shapeless
-# > recipe:
-# >   ingredients:
-# >     - <item_name>
-# >     ...
-#
-# shaped
-# > recipe:
-# >   shape:
-# >     - " A "
-# >     - "RR "
-# >     - "ARR "
-# >   ingredients:
-# >     A: <item_name>
-# >     R: <item_name>
-recipe:
-  shape:
-    - " I "
-    - "IDI"
-    - " I "
-  ingredients:
-    I: iron_ingot
-    D: diamond
+emptyEgg:
+  item: egg
+  name: Empty Egg
+  lore: []
+
+  ## to disable
+  #  > recipe: false
+  ## shapeless
+  #  > recipe:
+  #  >   ingredients:
+  #  >     - <item_name>
+  #  >     ...
+  ## shaped
+  #  > recipe:
+  #  >   shape:
+  #  >     - " A "
+  #  >     - "RR "
+  #  >     - "ARR "
+  #  >   ingredients:
+  #  >     A: <item_name>
+  #  >     R: <item_name>
+  recipe:
+    shape:
+      - " I "
+      - "IDI"
+      - " I "
+    ingredients:
+      I: iron_ingot
+      D: diamond
 
 # Mobs that can be caught using empty egg and additional conditions that have to be met to catch specific mob.
 mobs:
