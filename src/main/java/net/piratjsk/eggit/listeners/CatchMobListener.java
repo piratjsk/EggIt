@@ -51,7 +51,7 @@ public final class CatchMobListener implements Listener {
     }
 
     private boolean isEmptyEgg(final ItemStack item) {
-        return item.getType().equals(Material.EGG) && item.getItemMeta().getDisplayName().equals(ChatColor.RESET + "Empty Egg");
+        return item.equals(EggIt.getEmptyEgg());
     }
 
     private void catchMob(final Player player, final Entity entity) {

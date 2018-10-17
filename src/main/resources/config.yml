@@ -1,3 +1,5 @@
+locale: en
+
 emptyEgg:
   item: egg
   name: Empty Egg
@@ -95,3 +97,23 @@ mobs:
 sounds:
   success: ENTITY_CHICKEN_EGG
   failure: ENTITY_VILLAGER_NO
+
+eggHandlers:
+  enabled:
+    - sheep
+    - horse
+    - ocelot
+    - villager
+    - age
+    - customName
+  horse:
+    style: true
+    color: true
+    jumpStrength: true
+    speed: true
+  villager:
+    profession: true
+    career: true
+    riches: true
+
+

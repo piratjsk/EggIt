@@ -1,0 +1,86 @@
+commands:
+  prefix: "&7[&fEggIt&7] &r"
+  info:
+    noPermission: "Eggs!"
+    commands: "Commands:"
+    give: "/eggit egg [amount] [player] &7- gives empty egg item"
+    reload: "/eggit reload &7- reloads plugin configuration"
+  give:
+    noPermission: "&cYou can't do that."
+    cantFindPlayer: "Can't find player %player%."
+    pleaseSpecifyPlayer: "Please specify player name: /eggit egg [amount] [player]"
+  reload:
+    noPermission: "&cYou can't do that."
+    done: "&aConfig reloaded."
+egghandlers:
+  sheep:
+    color.label: "&r&7Color: &r"
+    color:
+      white: white
+      orange: orange
+      magenta: magenta
+      light_blue: light blue
+      yellow: yellow
+      lime: lime
+      pink: pink
+      gray: gray
+      light_gray: light gray
+      cyan: cyan
+      purple: purple
+      blue: blue
+      brown: brown
+      green: green
+      red: red
+      black: black
+  horse:
+    style.label: "&r&7Style: &r"
+    style:
+      black_dots: black dots
+      none: none
+      white: white
+      white_dots: white dots
+      whitefield: whitefield
+    color.label: "&r&7Color: &r"
+    color:
+      black: black
+      brown: brown
+      chestnut: chestnut
+      creamy: creamy
+      dark_brown: dark brown
+      gray: gray
+      white: white
+    jumpStrength.label: "&r&7Jump strength: &r"
+    jumpStrength.blocks: "blocks"
+    speed.label: "&r&7Speed: &r"
+    speed.blocksPerSecond: "blocks/sec"
+  ocelot.type.label: "&r&7Type: &r"
+  villager:
+    profession.label: "&r&7Profession: &r"
+    profession:
+      blacksmith: blacksmith
+      butcher: butcher
+      farmer: farmer
+      librarian: librarian
+      nitwit: nitwit
+      priest: priest
+    career.label: "&r&7Career: &r"
+    career:
+      armorer: armorer
+      butcher: butcher
+      cartographer: cartographer
+      cleric: cleric
+      farmer: farmer
+      fisherman: fisherman
+      fletcher: fletcher
+      leatherworker: leatherworker
+      librarian: librarian
+      nitwit: nitwit
+      shepherd: shepherd
+      tool_smith: tool smith
+      weapon_smith: weapon smith
+    riches.label: "&r&7Riches: &r"
+    riches.emeralds: "emeralds"
+  age:
+    label: "&r&7Age: &r"
+    baby: baby
+    adult: adult
